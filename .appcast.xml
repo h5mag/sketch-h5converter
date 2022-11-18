@@ -5,9 +5,9 @@
         <description>Easily upload your artboards to h5mag.com</description>
         <language>en</language>
         <item>
-            <title>1.0</title>
+            <title>1.0.0</title>
             <pubDate>Fri, 18 Nov 2022 15:10</pubDate>
-            <enclosure url="https://github.com/h5mag/sketch-h5converter/releases/download/v1.0/h5converter.zip" sparkle:version="1.0"/>
+            <enclosure url="https://github.com/h5mag/sketch-h5converter/releases/download/v1.0/h5converter.zip" sparkle:version="1.0.0"/>
         </item>
     </channel>
 </rss>
