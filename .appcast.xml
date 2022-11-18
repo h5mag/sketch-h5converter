@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <channel>
-        <title>H5Converter</title>
-        <description>Easily upload your artboards to h5mag.com</description>
-        <language>en</language>
-        <item>
-            <title>1.0.0</title>
-            <pubDate>Fri, 18 Nov 2022 15:10</pubDate>
-            <enclosure url="https://github.com/h5mag/sketch-h5converter/releases/download/v1.0/h5converter.zip" sparkle:version="1.0.0"/>
-        </item>
-    </channel>
+  <channel>
+    <title>H5Converter</title>
+    <description>Easily upload your artboards to h5mag.com</description>
+    <language>en</language>
+    <item>
+      <enclosure url="https://github.com/h5mag/sketch-h5converter/releases/download/v2.0.0/h5mag.sketchplugin.zip" sparkle:version="2.0.0"/>
+    </item>
+    <item>
+      <title>1.0.0</title>
+      <pubDate>Fri, 18 Nov 2022 15:10</pubDate>
+      <enclosure url="https://github.com/h5mag/sketch-h5converter/releases/download/v1.0/h5converter.zip" sparkle:version="1.0.0"/>
+    </item>
+  </channel>
 </rss>
