@@ -1,6 +1,12 @@
 {
+	"name": "H5Converter",
+	"description": "Easily upload your artboards to h5mag.com",
+	"version": "1.0",
+	"author": "H5mag",
 	"compatibleVersion": 3,
-	"bundleVersion": 1,
+	"homepage": "h5mag.com",
+	"authorEmail": "support@h5mag.com",
+	"icon": "icon.png",
 	"commands": [
 		{
 			"name": "Export",
