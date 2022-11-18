@@ -5,6 +5,9 @@
     <description>Easily upload your artboards to h5mag.com</description>
     <language>en</language>
     <item>
+      <enclosure url="https://github.com/h5mag/sketch-h5converter/releases/download/v3.0.0/h5mag.sketchplugin.zip" sparkle:version="3.0.0"/>
+    </item>
+    <item>
       <enclosure url="https://github.com/h5mag/sketch-h5converter/releases/download/v2.0.0/h5mag.sketchplugin.zip" sparkle:version="2.0.0"/>
     </item>
     <item>
