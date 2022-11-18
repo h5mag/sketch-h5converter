@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Fonts</title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="darkstyle.css">
+</head>
+<body>
+<img class="logo right" alt="H5mag's logo" src="../../assets/h5mag_logo.svg"/>
+<p class="content left">Select a project to view the fonts and upload them if necessary</p>
+<div class="table-container left">
+	<table id="project-selector">
+		<thead>
+		<tr>
+			<th class="fill">Project name</th>
+			<th class="icon frontSpacer small right"><img
+				src="../../assets/icons/search-icon.svg" class="icon search"
+				onclick="searching(this, originalProjects, 'title', project, displayProjects)"/></th>
+		</tr>
+		</thead>
+		<tbody id="project-body">
+		<tr>
+			<td rowspan="3">Fetching your projects
+				<div class="dot-flashing"></div>
+			</td>
+		</tr>
+		<!--DYNAMICALLY INSERTED BY displayProjects()-->
+		</tbody>
+	</table>
+</div>
+<div class="table-container right">
+	<table id="edition-selector">
+		<thead>
+		<tr>
+			<th class="fill">Font name</th>
+			<th class="frontSpacer">Available</th>
+		</tr>
+		</thead>
+		<tbody id="font-body" class="nohover">
+		<!--DYNAMICALLY INSERTED BY displayFonts()-->
+		</tbody>
+	</table>
+</div>
+<a id="edit-link" class="bottom-text" onclick="window.postMessage('openFontsBrowser', project.domain)">Click here to
+	edit your fonts in H5mag...</a>
+<div class="button-box">
+	<button id="cancel-button" onclick="window.postMessage('cancel');" class="secondary">Close</button>
+</div>
+<script>
+	let project = {};
+	let projects = [];
+	let fonts = [];
+	let originalProjects = [];
+	/**
+	 * @func clickEvent
+	 * The event that belongs to the select btn
+	 */
+	let clickEvent = function () {
+		window.postMessage('destination-selected', project);
+	}
+
+	/**
+	 * @func setProjects
+	 * This function allows for the initialization of the project view
+	 * @param projectsParam
+	 */
+	window.setProjects = (projectsParam) => {
+		originalProjects = projectsParam;
+		displayProjects(projectsParam);
+	}
+
+	/**
+	 * @func displayFonts
+	 * Fills the table with the fonts and adds and icon if there are problems or not
+	 * @param fontsParam
+	 */
+	window.displayFonts = (fontsParam) => {
+		fonts = fontsParam;
+		let tableBody = document.getElementById('font-body');
+		tableBody.innerHTML = '';
+		for (let i = 0; i < fonts.length; i++) {
+			let tr = document.createElement('tr');
+			let iconImg = fonts[i].included ? '<img class="successIcon" src="../../assets/icons/successIcon.svg"/>' : '<img class="warningIcon" src="../../assets/icons/warningIcon.svg"/><span class="tooltip">This font is not found in the project\'s fonts library, upload it manually </span>';
+			tr.innerHTML = '<td class="fill">' + fonts[i].name + '</td><td class="small">' + iconImg + '</td>'
+			tableBody.appendChild(tr);
+		}
+	}
+
+	/**
+	 * @func searching
+	 * This function handles the search functionality, it uses the original array to make a filtered list
+	 * @param el
+	 * @param originalList list to filter of original objects
+	 * @param filteredKey key to search in
+	 * @param selectedItem item that was selected
+	 * @param displayCallback callback after filtering to display results
+	 */
+	let searching = function (el, originalList, filteredKey, selectedItem, displayCallback) {
+		if (originalList.length < 1) return;
+		let makeSearchBox = function (el) {
+			let searchBox = document.createElement('input');
+			searchBox.classList.add('searchBarFloat');
+			el.parentElement.appendChild(searchBox);
+			return searchBox;
+		}
+		let makeRemoveIcon = function (el) {
+			let emptyEl = document.createElement('div');
+			emptyEl.innerHTML = '<img class="removeIcon" src="../../assets/icons/delete-icon.svg"/>';
+			el.parentElement.appendChild(emptyEl);
+			return emptyEl;
+		}
+
+		let tableBody = el.parentNode;
+		while (tableBody.tagName != 'THEAD') tableBody = tableBody.parentNode;
+		tableBody = tableBody.nextSibling;
+		let searchBox = makeSearchBox(el);
+		let emptyEl = makeRemoveIcon(el);
+		let clicker = 0;
+		let searchIn = function () {
+			let val = searchBox.value.toLowerCase();
+			tableBody.innerText = '';
+			selectedItem = {};
+			displayCallback(originalList.filter(obj => obj[filteredKey].toLowerCase().includes(val)));
+		}
+		let removeSearch = function (el, icon) {
+			el.remove();
+			icon.remove();
+			displayCallback(originalList);
+			return 0;
+		}
+		searchBox.focus();
+		searchBox.addEventListener('keyup', function () {
+			searchIn();
+		});
+		emptyEl.addEventListener('click', function (event) {
+			event.stopPropagation();
+			if (searchBox.value.length < 1) {
+				clicker = removeSearch(searchBox, emptyEl);
+			} else {
+				searchBox.value = '';
+				searchIn();
+			}
+		});
+		window.addEventListener('click', function (event) {
+			if (event.target !== searchBox && clicker > 0) {
+				clicker = removeSearch(searchBox, emptyEl);
+			}
+			clicker++;
+		});
+	}
+
+	/**
+	 * @func displayProjects
+	 * This function generates HTML to showcase the projects belonging to an user
+	 * @param projectsParam
+	 */
+	let displayProjects = (projectsParam) => {
+		projects = projectsParam;
+		let tableBody = document.getElementById('project-body');
+		tableBody.innerHTML = '';
+		for (let i = 0; i < projects.length; i++) {
+			let tr = document.createElement('tr');
+			if (project == projects[i]) {
+				tr.classList.add('selected');
+			}
+			tr.addEventListener('click', function () {
+				tableBody.querySelectorAll('.selected').forEach(el => {
+					el.classList.remove('selected');
+				});
+				window.postMessage('findFonts', projects[i].domain);
+				project = projects[i];
+				tr.classList.add('selected');
+			}.bind(this));
+			tr.innerHTML = '<td class="fill">' + projects[i].title + '</td><td class="small selectMark right"></td>';
+			tableBody.appendChild(tr);
+		}
+	}
+</script>
+</body>
+</html>

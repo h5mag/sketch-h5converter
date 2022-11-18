@@ -1,0 +1,18 @@
+# build artefacts
+h5converter.sketchplugin
+h5mag.sketchplugin
+
+# npm
+node_modules
+.npm
+npm-debug.log
+
+# mac
+.DS_Store
+
+# WebStorm
+.idea
+
+# sketch
+# sketch-assets
+h5mag.sketchplugin.zip

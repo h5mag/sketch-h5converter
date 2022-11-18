@@ -1,0 +1,31 @@
+body.__skpm-dark {
+	/**TESTING PURPOSING ONLY.**/
+	/*background-color:#231F2A;*/
+	/**TESTING PURPOSING ONLY.**/
+	color: #DCDCDD;
+	--textColor: #DCDCDD;
+	--secondaryButton: linear-gradient(#888888, #5A5661);
+	--secondaryButtonHover: linear-gradient(#737373, #4a464f);
+	--secondaryButtonBorder: 1px solid #4a464f;
+	--secondaryButtonColor: white;
+	--tableBackground: #3a3a3a;
+	--searchInputBackground: #5d5d5d;
+	--toggleBackground: #5d5d5d;
+	--tableBorder: 1px solid #4a464f;
+	--tableHover: #4a464f;
+	--iconSuccessColor: invert(91%) sepia(3%) saturate(41%) hue-rotate(202deg) brightness(103%) contrast(81%);
+	--iconColor: invert(91%) sepia(3%) saturate(41%) hue-rotate(202deg) brightness(103%) contrast(81%);
+}
+
+body.__skpm-dark .warningIcon,
+body.__skpm-dark .icon.search,
+body.__skpm-dark .removeIcon,
+body.__skpm-dark .errorIcon,
+body.__skpm-dark .successIcon {
+	filter: var(--iconColor);
+}
+
+body.__skpm-dark .searchBarFloat {
+	background-color: var(--searchInputBackground);
+	color: var(--textColor);
+}

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Selection</title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="darkstyle.css">
+</head>
+<body>
+<img class="logo right" alt="H5mag's logo" src="../../assets/h5mag_logo.svg"/>
+<p class="content left">Select a project and edition for export:</p>
+<div class="table-container left">
+	<table id="project-selector">
+		<thead>
+		<tr>
+			<th class="fill" onclick="sorting(this, projects, 'title', 'name', displayProjects)">Project name</th>
+			<th class="frontSpacer big" onclick="sorting(this, projects, 'edited', 'date', displayProjects)">Edited</th>
+			<th class="icon small"><img src="../../assets/icons/search-icon.svg" class="icon search"
+										onclick="searching(
+												this, originalProjects, 'title', project, displayProjects)"/></th>
+		</tr>
+		</thead>
+		<tbody id="project-body">
+		<tr>
+			<td rowspan="3">Fetching your projects
+				<div class="dot-flashing"></div>
+			</td>
+		</tr>
+		<!--DYNAMICALLY INSERTED BY displayProjects()-->
+		</tbody>
+	</table>
+</div>
+<div class="table-container right">
+	<table id="edition-selector">
+		<thead>
+		<tr>
+			<th class="fill" onclick="sorting(this, project.editions, 'title', 'name', displayEditions)">Edition name
+			</th>
+			<th class="frontSpacer big" onclick="sorting(this, project.editions, 'edited', 'date', displayEditions)">
+				Edited
+			</th>
+			<th class="icon small"><img src="../../assets/icons/search-icon.svg" class="icon search"
+										onclick="searching(
+												this, project.editions, 'title', edition, displayEditions)"/></th>
+		</tr>
+		</thead>
+		<tbody id="edition-body">
+		<!--DYNAMICALLY INSERTED BY displayEditions()-->
+		</tbody>
+	</table>
+</div>
+<a id="edit-link" class="bottom-text" onclick="window.postMessage('openH5mag')">Click here to manage your account on
+	H5mag.com...</a>
+<div class="button-box">
+	<button id="cancel-button" onclick="window.postMessage('cancel');" class="secondary">Cancel</button>
+	<button id="select-button" class="primary inactive">Select</button>
+</div>
+<script>
+	let project = {};
+	let originalProjects = [];
+	let edition = {};
+	let projects = [];
+
+	/**
+	 * @func clickEvent
+	 * The event that belongs to the select btn
+	 */
+	let clickEvent = function () {
+		window.postMessage('destination-selected', project);
+	}
+
+	/**
+	 * @func escapeHtml
+	 * This function escapesHtml before it is used in the dom
+	 * @param text
+	 * @returns {*}
+	 */
+	function escapeHtml(text) {
+		let map = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#039;'
+		};
+		return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+	}
+
+	/**
+	 * @func getDate
+	 * This function turns the Date object given from the database into a user-friendly string
+	 * @param date the date to transform
+	 * @returns {string}
+	 */
+	let getDate = function (date) {
+		let dateObj = new Date(date).toISOString();
+		let year = dateObj.substring(0, 10);
+		let time = dateObj.substring(11, 16);
+		return year + ' ' + time;
+	}
+
+	/**
+	 * @func searching
+	 * This function handles the search functionality, it uses the original array to make a filtered list
+	 * @param el
+	 * @param originalList list to filter of original objects
+	 * @param filteredKey key to search in
+	 * @param selectedItem item that was selected
+	 * @param displayCallback callback after filtering to display results
+	 */
+	let searching = function (el, originalList, filteredKey, selectedItem, displayCallback) {
+		if (originalList.length < 1) return;
+		let makeSearchBox = function (el) {
+			let searchBox = document.createElement('input');
+			searchBox.classList.add('searchBarFloat');
+			el.parentElement.appendChild(searchBox);
+			return searchBox;
+		}
+		let makeRemoveIcon = function (el) {
+			let emptyEl = document.createElement('div');
+			emptyEl.innerHTML = '<img class="removeIcon" src="../../assets/icons/delete-icon.svg"/>';
+			el.parentElement.appendChild(emptyEl);
+			return emptyEl;
+		}
+
+		let tableBody = el.parentNode;
+		while (tableBody.tagName != 'THEAD') tableBody = tableBody.parentNode;
+		tableBody = tableBody.nextSibling;
+		let searchBox = makeSearchBox(el);
+		let emptyEl = makeRemoveIcon(el);
+		let clicker = 0;
+		let searchIn = function () {
+			let val = searchBox.value.toLowerCase();
+			tableBody.innerText = '';
+			selectedItem = {};
+			displayCallback(originalList.filter(obj => obj[filteredKey].toLowerCase().includes(val)));
+		}
+		let removeSearch = function (el, icon) {
+			el.remove();
+			icon.remove();
+			displayCallback(originalList);
+			return 0;
+		}
+		searchBox.focus();
+		searchBox.addEventListener('keyup', function () {
+			searchIn();
+		});
+		emptyEl.addEventListener('click', function (event) {
+			event.stopPropagation();
+			if (searchBox.value.length < 1) {
+				clicker = removeSearch(searchBox, emptyEl);
+			} else {
+				searchBox.value = '';
+				searchIn();
+			}
+		});
+		window.addEventListener('click', function (event) {
+			if (event.target !== searchBox && clicker > 0) {
+				clicker = removeSearch(searchBox, emptyEl);
+			}
+			clicker++;
+		});
+	}
+
+	/**
+	 * @func sorting
+	 * This function handles the sorting of the list
+	 * @param el element that was clicked (thead)
+	 * @param sortList list to be sorted
+	 * @param sortedKey key index in the list to be sorted
+	 * @param type to be sorted like date/name
+	 * @param displayCallback callback to render results
+	 */
+	let sorting = function (el, sortList, sortedKey, type, displayCallback) {
+		let order;
+		if (el.classList.contains('desc')) {
+			order = 'desc';
+		} else {
+			order = 'asc';
+		}
+		el.parentElement.querySelectorAll('th').forEach(el => {
+			el.classList.remove('desc');
+			el.classList.remove('asc');
+		});
+		switch (type) {
+			case 'date':
+				if (order === 'desc') {
+					sortList = sortList.sort(function (a, b) {
+						return new Date(a[sortedKey]) - new Date(b[sortedKey])
+					});
+					el.classList.add('asc');
+				} else {
+					sortList = sortList.sort(function (a, b) {
+						return new Date(b[sortedKey]) - new Date(a[sortedKey])
+					});
+					el.classList.add('desc');
+				}
+				break;
+			case 'name':
+				if (order === 'desc') {
+					sortList = sortList.sort(function (a, b) {
+						return b[sortedKey].localeCompare(a[sortedKey])
+					});
+					el.classList.add('asc');
+				} else {
+					sortList = sortList.sort(function (a, b) {
+						return a[sortedKey].localeCompare(b[sortedKey])
+					});
+					el.classList.add('desc');
+				}
+				break;
+		}
+		displayCallback(sortList)
+	}
+
+	/**
+	 * @func setProjects
+	 * This function allows for the initialization of the project view
+	 * @param projectsParam
+	 */
+	window.setProjects = (projectsParam) => {
+		originalProjects = projectsParam;
+		displayProjects(projectsParam);
+	}
+
+	/**
+	 * @func displayProjects
+	 * This function generates HTML to showcase the projects belonging to an user
+	 * @param projectsParam
+	 */
+	let displayProjects = (projectsParam) => {
+		projects = projectsParam;
+		let tableBody = document.getElementById('project-body');
+		let nextBtn = document.getElementById('select-button');
+		tableBody.innerHTML = '';
+		for (let i = 0; i < projects.length; i++) {
+			let tr = document.createElement('tr');
+			if (project == projects[i]) {
+				tr.classList.add('selected');
+			}
+			tr.addEventListener('click', function () {
+				tableBody.querySelectorAll('.selected').forEach(el => {
+					el.classList.remove('selected');
+				});
+				project = projects[i];
+				displayEditions(projects[i].editions);
+				tr.classList.add('selected');
+				nextBtn.classList.add('inactive');
+				nextBtn.removeEventListener('click', clickEvent);
+			}.bind(this));
+			tr.innerHTML = '<td class="fill">' + escapeHtml(projects[i].title) + '</td><td class="big">' + getDate(projects[i].edited) + '</td><td class="small selectMark"></td>';
+			tableBody.appendChild(tr);
+		}
+	}
+
+	/**
+	 * @func displayEditions
+	 * This function generates HTML to showcase the editions belonging to the selected project.
+	 * @param editions
+	 */
+	let displayEditions = (editions) => {
+		let tableBody = document.getElementById('edition-body');
+		let nextBtn = document.getElementById('select-button');
+		tableBody.innerHTML = '';
+		for (let i = 0; i < editions.length; i++) {
+			let tr = document.createElement('tr');
+			if (edition == editions[i]) {
+				tr.classList.add('selected');
+			}
+			tr.addEventListener('click', function () {
+				tableBody.querySelectorAll('.selected').forEach(el => {
+					el.classList.remove('selected');
+				});
+				tr.classList.add('selected');
+				project.selectedEdition = editions[i];
+				edition = editions[i];
+				nextBtn.classList.remove('inactive');
+				nextBtn.addEventListener('click', clickEvent);
+			}.bind(this));
+			tr.innerHTML = '<td class="fill">' + escapeHtml(editions[i].title) + '</td><td class="big">' + getDate(editions[i].edited) + '</td><td class="small"></td>';
+			tableBody.appendChild(tr);
+		}
+	}
+</script>
+</body>
+</html>

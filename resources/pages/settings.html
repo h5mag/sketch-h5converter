@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Settings</title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="darkstyle.css">
+</head>
+<body>
+<img class="logo right" alt="H5mag's logo" src="../../assets/h5mag_logo.svg"/>
+
+<div class="options">
+	<div class="well options">
+	<h3>Artboard settings</h3>
+	<p>These settings will help converting your artboards to a correct H5mag article.</p>
+	<label for="footer">Detection of H5mag footer (beta)</label><input onchange="toggleSetting(event)" id="footer" class="switch" type="checkbox">
+	<hr>
+	<label for="popup">Detection and automatically uploading of pop-ups (beta)</label><input onchange="toggleSetting(event)" id="popup" class="switch" type="checkbox">
+	</div>
+	<div class="well options">
+	<h3>Runtime settings</h3>
+	<p>These settings speed up the performance of this plugin.</p>
+	<label for="artboard">Hide mini-previews of artboards</label><input onchange="toggleSetting(event)" id="artboard" class="switch" type="checkbox">
+	</div>
+</div>
+<div class="button-box">
+	<button id="cancel-button" onclick="window.postMessage('cancel');" class="secondary">Close</button>
+</div>
+<script>
+	let settings;
+
+	window.setSettings = (settingsParam) => {
+		settings = settingsParam;
+		for (const key in settingsParam) {
+			document.getElementById(key).checked = settingsParam[key];
+		}
+	}
+
+	let toggleSetting = (event) => {
+		settings[event.target.id] = event.target.checked;
+		window.postMessage('settingsSave', settings);
+	}
+</script>
+</body>
+</html>

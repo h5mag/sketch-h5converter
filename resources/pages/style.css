@@ -1,0 +1,487 @@
+body {
+	--logoHeight: 54px;
+	--logoWidth: 57px;
+	--searchIconSize: 12px;
+	--successIconSize: 16px;
+	--errorIconSize: 25px;
+	--loadIconSize: 20px;
+	--margin: 26px;
+	--textColor: black;
+	--primaryButton: linear-gradient(#70ABE4, #2172DD);
+	--primaryButtonHover: linear-gradient(#5198de, #0767e5);
+	--primaryButtonColor: white;
+	--secondaryButton: linear-gradient(#ffffff, #e5e5e5);
+	--secondaryButtonHover: linear-gradient(#ececec, #dadada);
+	--secondaryButtonColor: black;
+	--secondaryButtonBorder: 1px solid #c4c4c4;
+	--inactiveButton: linear-gradient(#ffffff, #e5e5e5);
+	--inactiveButtonColor: grey;
+	--inactiveButtonBorder: 1px solid #c4c4c4;
+	--toggleBackground: #D9D9D9;
+	--toggleBackgroundActive: #5198de;
+	--tableBackground: #f8f6f8;
+	--tableBorder: 1px solid #c4c4c4;
+	--hrBorder: 1px solid rgba(196, 196, 196, 0.6);
+	--tableHover: #c4c4c4;
+	--tableHeight: 420px;
+	--iconSuccessColor: invert(70%) sepia(0%) saturate(0%) hue-rotate(286deg) brightness(112%) contrast(94%);
+	position: relative;
+	margin: 0;
+	overflow: hidden;
+	height: 100vh;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.button-box {
+	position: absolute;
+	right: var(--margin);
+	bottom: 10px;
+}
+
+button.primary {
+	background: var(--primaryButton);
+	color: var(--primaryButtonColor);
+}
+
+button.underLogo {
+	display: inline-block;
+	position: absolute;
+	right: 80px;
+	top: 13px;
+}
+
+button.primary:hover {
+	background: var(--primaryButtonHover);
+}
+
+button.secondary {
+	background: var(--secondaryButton);
+	border: var(--secondaryButtonBorder);
+	color: var(--secondaryButtonColor);
+}
+
+button.secondary:hover {
+	background: var(--secondaryButtonHover);
+}
+
+button.inactive {
+	background: var(--inactiveButton);
+	color: var(--inactiveButtonColor);
+}
+
+button.inactive:hover {
+	background: var(--inactiveButton);
+}
+
+button {
+	padding: 4px 14px;
+	border: none;
+	border-radius: 6px;
+	margin-left: 8px;
+	box-shadow: 1px 1px rgba(0, 0, 0, 0.04);
+	font-size: 0.9em;
+	transition: background 2s;
+}
+
+input[type='checkbox'] {
+	margin-left: 14px;
+}
+
+input.switch {
+	float:right;
+	position:relative;
+	-webkit-appearance: none;
+	outline: none;
+	width: 40px;
+	height: 22px;
+	background-color: var(--toggleBackground);
+	border-radius: 50px;
+}
+
+input.switch:after {
+	content: "";
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	background:var(--primaryButtonColor);
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	transition: all 500ms;
+}
+
+input.switch:checked {
+	background-color: var(--toggleBackgroundActive);
+}
+
+input.switch:checked:after {
+	left: 20px;
+}
+
+h3 {
+	line-height: 0;
+	font-size: 1em;
+}
+
+a,
+label,
+p {
+	font-size: 0.8em;
+}
+
+a:hover {
+	color: #2172DD;
+	cursor: default;
+}
+
+.logo {
+	position: relative;
+	height: var(--logoHeight);
+	width: var(--logoWidth);
+	display: inline-block;
+	margin-left: var(--margin);
+	top: 16px;
+}
+
+.logo.right {
+	position: absolute;
+	right: var(--margin);
+}
+
+.content {
+	position: absolute;
+	left: calc(var(--logoWidth) + var(--margin) + 16px);
+	display: inline-block;
+	top: 8px;
+	right: var(--margin);
+}
+
+.content.left {
+	left: var(--margin);
+	top: 42px;
+}
+
+.options{
+	position: absolute;
+	top: 42px;
+	left: var(--margin);
+	right: var(--margin);
+}
+
+.well {
+	position:relative;
+	border: var(--tableBorder);
+	background-color: var(--tableBackground);
+	border-radius: 2px;
+	padding: 8px 8px 16px 8px;
+	width: 94%;
+	margin-bottom: 22px;
+}
+
+.table-container {
+	position: absolute;
+	height: var(--tableHeight);
+	width: 370px;
+	border: var(--tableBorder);
+	top: 80px;
+	border-radius: 2px;
+	background-color: var(--tableBackground);
+}
+
+.table-container.full {
+	width: calc(800px - calc(var(--margin) * 2));
+	margin-left: var(--margin);
+	top: 155px;
+	height: calc(var(--tableHeight) - 60px);
+}
+
+.table-container.right {
+	right: var(--margin);
+}
+
+.table-container.left {
+	left: var(--margin);
+}
+
+table {
+	background-color: var(--tableBackground);
+	max-height: calc(var(--tableHeight) - 60px);
+	overflow: scroll;
+	width: 370px;
+	border-spacing: 0;
+}
+
+.table-container.full table {
+	width: calc(800px - calc(var(--margin) * 2));
+}
+
+thead tr {
+	display: block;
+	width: 100%;
+	line-height: 0;
+	text-align: left;
+	font-size: 0.7em;
+	font-weight: normal;
+	min-height: var(--searchIconSize);
+}
+
+tbody {
+	font-size: 0.8em;
+	display: block;
+	height: calc(var(--tableHeight) - 80px - var(--searchIconSize));
+	overflow: auto;
+	width: 100%;
+}
+
+tr td:nth-child(2) {
+	text-align: left;
+}
+
+tr td.right {
+	text-align: right;
+}
+
+th {
+	border-bottom: var(--tableBorder);
+	line-height: 0;
+	height: var(--searchIconSize);
+	position: relative;
+}
+
+th.asc::after {
+	background: url('../../assets/icons/sort-asc.svg') no-repeat bottom;
+	content: '';
+	position: absolute;
+	top: 8px;
+	right: 0;
+	width: var(--searchIconSize);
+	height: var(--searchIconSize);
+	filter: var(--iconColor);
+}
+
+th.desc::after {
+	background: url('../../assets/icons/sort-desc.svg') no-repeat bottom;
+	content: '';
+	position: absolute;
+	top: 4px;
+	right: 0;
+	width: var(--searchIconSize);
+	height: var(--searchIconSize);
+	filter: var(--iconColor);
+}
+
+th, td {
+	padding: 6px 6px 4px 6px;
+	font-weight: normal;
+}
+
+td.thumbnail img {
+	width: 50px;
+	height: 24px;
+	object-fit: cover;
+}
+
+tbody tr:hover {
+	background-color: var(--tableHover);
+	cursor: default;
+}
+
+tbody.nohover tr:hover {
+	background-color: var(--tableBackground);
+	cursor: default;
+}
+
+tr.selected {
+	background-color: var(--tableHover);
+}
+
+tr.selected td.selectMark::after {
+	content: 'v';
+}
+
+tr td.selectMark::after {
+	content: '>';
+}
+
+tr.page td {
+	text-align: center;
+	border-bottom: var(--tableBorder);
+}
+
+tr.page td:hover {
+	background-color: var(--tableBackground);
+}
+
+th.frontSpacer {
+	border-left: var(--tableBorder);
+}
+
+th.small,
+td.small {
+	width: 62px;
+}
+
+th.big,
+td.big {
+	width: 377px;
+}
+
+th.fill,
+td.fill {
+	width: 500px;
+}
+
+th.icon {
+	width: var(--searchIconSize);
+}
+
+.icon.search {
+	float: right;
+	height: var(--searchIconSize);
+	width: var(--searchIconSize);
+}
+
+.loadIcon {
+	height: var(--loadIconSize);
+	width: var(--loadIconSize);
+	margin-left: 9px;
+}
+
+.bottom-text {
+	position: absolute;
+	top: 503px;
+	right: 31px;
+}
+
+.searchBarFloat {
+	position: absolute;
+	left: -127px;
+	top: -1px;
+	height: 19px;
+	box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.37);
+	border: var(--secondaryButtonBorder);
+}
+
+.removeIcon {
+	position: absolute;
+	right: 8px;
+	height: var(--searchIconSize);
+	width: var(--searchIconSize);
+	cursor: default;
+}
+
+.successIcon {
+	height: var(--successIconSize);
+	width: var(--successIconSize);
+	margin-left: 12px;
+	filter: var(--iconSuccessColor);
+}
+
+.errorIcon {
+	height: var(--errorIconSize);
+	width: var(--errorIconSize);
+	margin-left: 8px;
+	filter: var(--iconSuccessColor);
+}
+
+.warningIcon {
+	height: var(--successIconSize);
+	width: var(--successIconSize);
+	margin-left: 12px;
+}
+
+.warnings p{
+	width: 85%;
+	margin:0;
+	display: inline-block;
+}
+
+.tooltip {
+	display: none;
+	position: absolute;
+	width: 220px;
+	background-color: rgba(255, 0, 0, 0.65);
+	padding: 5px 12px;
+	border-radius: 4px;
+	box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.62);
+	right: 0;
+	top: 0;
+	z-index: 1;
+}
+
+.tooltip.artboards{
+	left: 26px;
+	background-color: rgba(255, 0, 0, 0.79);
+}
+
+td {
+	position: relative;
+}
+
+td:hover .tooltip {
+	display: block;
+}
+
+.zoomable:hover {
+	transition: transform 1s;
+	transition-delay: 1.5s;
+	transform: scale(4);
+	z-index:100;
+}
+
+.dot-flashing {
+	display: inline-block;
+	margin-left: 14px;
+	position: relative;
+	width: 4px;
+	height: 4px;
+	border-radius: 5px;
+	background-color: var(--textColor);
+	color: var(--textColor);
+	animation: dotFlashing 1s infinite linear alternate;
+	animation-delay: .5s;
+}
+
+.dot-flashing::before, .dot-flashing::after {
+	content: '';
+	display: inline-block;
+	position: absolute;
+	top: 0;
+}
+
+.dot-flashing::before {
+	left: -9px;
+	width: 4px;
+	height: 4px;
+	border-radius: 5px;
+	background-color: var(--textColor);
+	color: var(--textColor);
+	animation: dotFlashing 1s infinite alternate;
+	animation-delay: 0s;
+}
+
+.dot-flashing::after {
+	left: 9px;
+	width: 4px;
+	height: 4px;
+	border-radius: 5px;
+	background-color: var(--textColor);
+	color: var(--textColor);
+	animation: dotFlashing 1s infinite alternate;
+	animation-delay: 1s;
+}
+
+@keyframes dotFlashing {
+	0% {
+		background-color: var(--textColor);
+	}
+	50%,
+	100% {
+		background-color: rgba(255, 255, 255, 0);
+	}
+}
+
+.options hr {
+	width: 99%;
+	border: var(--hrBorder);
+}

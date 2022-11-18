@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Logout</title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="darkstyle.css">
+</head>
+<body>
+<img class="logo" alt="H5mag's logo" src="../../assets/h5mag_logo.svg"/>
+<div class="content">
+	<h3>Are you sure you want to sign out now?</h3>
+	<p>You will need to login again to gain access to the features of this plugin in the future.</p>
+</div>
+<div class="button-box">
+	<button id="cancel-button" onclick="window.postMessage('cancel');" class="secondary">Cancel</button>
+	<button id="logout-button" onclick="window.postMessage('logout');" class="primary">Sign out</button>
+</div>
+</body>
+</html>

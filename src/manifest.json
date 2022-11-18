@@ -1,0 +1,60 @@
+{
+	"compatibleVersion": 3,
+	"bundleVersion": 1,
+	"commands": [
+		{
+			"name": "Export",
+			"identifier": "h5converter.my-command-identifier",
+			"script": "./plugin.js",
+			"shortcut": "ctrl shift .",
+			"handlers": {
+				"run": "onRun",
+				"actions": {
+					"Shutdown": "onShutdown"
+				}
+			}
+		},
+		{
+			"name": "Fonts",
+			"identifier": "h5converter.my-command-identifier-2",
+			"script": "./plugin.js",
+			"handlers": {
+				"run": "onFonts",
+				"actions": {
+					"Shutdown": "onShutdown"
+				}
+			}
+		},
+		{
+			"name": "Settings",
+			"identifier": "h5converter.my-command-identifier-4",
+			"script": "./plugin.js",
+			"handlers": {
+				"run": "onSettings",
+				"actions": {
+					"Shutdown": "onShutdown"
+				}
+			}
+		},
+		{
+			"name": "Logout",
+			"identifier": "h5converter.my-command-identifier-3",
+			"script": "./plugin.js",
+			"handlers": {
+				"run": "onLogout",
+				"actions": {
+					"Shutdown": "onShutdown"
+				}
+			}
+		}
+	],
+	"menu": {
+		"title": "H5Converter",
+		"items": [
+			"h5converter.my-command-identifier",
+			"h5converter.my-command-identifier-2",
+			"h5converter.my-command-identifier-4",
+			"h5converter.my-command-identifier-3"
+		]
+	}
+}

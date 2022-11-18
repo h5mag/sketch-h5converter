@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Selection</title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="darkstyle.css">
+</head>
+<body>
+<img class="logo right" alt="H5mag's logo" src="../../assets/h5mag_logo.svg"/>
+<div class="content left">
+	<p>
+		<strong>Project: </strong><span id="project-field"></span><br/>
+		<strong>Edition: </strong><span id="edition-field"></span><br/>
+	</p>
+	<button id="destiny-button" onclick="window.postMessage('change-destination')" class="secondary underLogo">Change
+		project or edition
+	</button>
+	<hr>
+	<p>
+		Activate an artboard in your project or select one or multiple artboards in the list below to select them for the export.
+		</br>Note: When your artboard has been uploaded to H5mag make sure to save it manually before publishing.
+	</p>
+</div>
+<div class="table-container full">
+	<table id="artboard-selector">
+		<thead>
+		<tr>
+			<th class="small">Status</th>
+			<th id="thumbnailth" class="frontSpacer small">Thumbnail</th>
+			<th class="frontSpacer fill" onclick="sortArtboards(this)">Title</th>
+			<th class="frontSpacer big">Warnings</th>
+		</tr>
+		</thead>
+		<tbody id="artboard-body">
+		<tr>
+			<td rowspan="4">Fetching your artboards
+				<div class="dot-flashing"></div>
+			</td>
+		</tr>
+		<!--DYNAMICALLY INSERTED BY displayArtboards()-->
+		</tbody>
+	</table>
+</div>
+<div class="button-box">
+	<button id="cancel-button" onclick="window.postMessage('cancel');" class="secondary">Cancel</button>
+	<button id="select-button" class="primary inactive">Select</button>
+</div>
+<script>
+	let pages = [];
+	let project = [];
+	let noImage = true;
+	/**
+	 * @func clickEvent
+	 * The event that belongs to the select btn
+	 */
+	clickEvent = function () {
+		let ids = [];
+		document.querySelectorAll('input:checked').forEach(el => {
+			ids.push(el.getAttribute('data-id'));
+			el.parentElement.innerHTML = '<img class="loadIcon" src="../../assets/icons/loadIcon.gif"/>';
+			el.remove();
+		});
+		document.querySelectorAll('input').forEach(el => {
+			el.setAttribute('disabled', '');
+		})
+		disableBtn();
+		window.postMessage('select-artboard', JSON.stringify(ids));
+	}
+
+	/**
+	 * @func calculateBtn
+	 * This function activates and deactivates the select button and handles the select attribute of the checkbox
+	 * @param el element to toggle
+	 */
+	let calculateBtn = function (el) {
+		let enabled = document.querySelectorAll('input:disabled').length < 1;
+		if (enabled) el.checked = !el.checked;
+		if (document.querySelectorAll('input:checked').length !== 0 && enabled) {
+			enableBtn();
+		} else {
+			disableBtn();
+		}
+	}
+
+	/**
+	 * @func disableBtn
+	 * This function disables the eventbtn that lets the user export an artboard
+	 */
+	let disableBtn = function () {
+		let btn = document.getElementById('select-button');
+		btn.classList.add('inactive');
+		btn.removeEventListener('click', clickEvent);
+	}
+
+	/**
+	 * @func enableBtn
+	 * This function enables the eventbtn that lets the user export an artboard
+	 */
+	let enableBtn = function () {
+		let btn = document.getElementById('select-button');
+		btn.classList.remove('inactive');
+		btn.addEventListener('click', clickEvent);
+	}
+
+	/**
+	 * @func displayDestiny
+	 * This function fills in the project and edition
+	 */
+	window.displayDestiny = (destiny) => {
+		project = destiny;
+		document.getElementById('project-field').innerText = destiny.title;
+		document.getElementById('edition-field').innerText = destiny.selectedEdition.title;
+	}
+
+	/**
+	 * @func displayArtboards
+	 * This function builds the table with artboards
+	 */
+	window.displayArtboards = (artboardsParam) => {
+		pages = artboardsParam;
+		let body = document.getElementById('artboard-body');
+		body.innerHTML = '';
+		for (let i = 0; i < pages.length; i++) {
+			let tr = document.createElement('tr');
+			tr.classList.add('page');
+			tr.innerHTML = '<td colspan="4">' + pages[i].name + '</td>';
+			body.appendChild(tr);
+			for (let j = 0; j < pages[i].artboards.length; j++) {
+				let board = pages[i].artboards[j];
+				let tr = document.createElement('tr');
+				tr.addEventListener('click', function () {
+					this.querySelectorAll('input[type=checkbox]').forEach(el => {
+						calculateBtn(el);
+					});
+				});
+				let selected = board.selected ? 'checked' : '';
+				if (selected) {
+					enableBtn();
+				}
+				let image = '';
+				if (board.image) {
+					image = '<td class="thumbnail small"><img class="zoomable" src="' + board.image + '"/></td>';
+					noImage = false;
+				}
+				tr.innerHTML = '<td data-id="' + board.id + '" class="small"><input data-id="' + board.id + '" onclick="calculateBtn(this)" type="checkbox"' + selected + '></td>' + image + '<td class="fill">' + board.name + '</td><td class="big warnings" ></td>';
+				body.appendChild(tr);
+			}
+		}
+		if (noImage) {
+			document.getElementById('thumbnailth').remove();
+		}
+	}
+
+	/**
+	 * @func sortArtboards
+	 * This function lets the user sort the artboards per page on the name/title of the artboard
+	 * @param el element on which the user sorts
+	 */
+	let sortArtboards = function (el) {
+		let sort;
+		if (el.classList.contains('desc')) {
+			sort = 'desc';
+		} else {
+			sort = 'asc';
+		}
+		el.parentElement.querySelectorAll('th').forEach(el => {
+			el.classList.remove('desc');
+			el.classList.remove('asc');
+		});
+		if (sort === 'desc') {
+			for (let i = 0; i < pages.length; i++) {
+				pages[i].artboards = pages[i].artboards.sort(function (a, b) {
+					return b.name.localeCompare(a.name)
+				});
+				el.classList.add('asc');
+			}
+		} else {
+			for (let i = 0; i < pages.length; i++) {
+				pages[i].artboards = pages[i].artboards.sort(function (a, b) {
+					return a.name.localeCompare(b.name)
+				});
+				el.classList.add('desc');
+			}
+		}
+		window.displayArtboards(pages);
+	}
+
+	/**
+	 * @func finishLoading
+	 * To display if an artboard has finished loading
+	 */
+	window.finishLoading = (warnings) => {
+		let body = document.getElementById('artboard-body');
+		body.querySelectorAll('.loadIcon').forEach(el => {
+			let failed = false;
+			if (warnings[el.parentElement.getAttribute('data-id')].length > 0) {
+				let warningEl = el.parentElement.parentElement.querySelectorAll('.warnings')[0];
+				warnings[el.parentElement.getAttribute('data-id')].forEach(warning => {
+					if (warning.includes('Server error')) failed = true;
+					warningEl.insertAdjacentHTML('beforeend', '<img class="errorIcon" src="../../assets/icons/errorIcon.svg"/><p>' + warning + '</p>');
+				});
+			}
+			if (failed) {
+				el.parentElement.innerHTML = '<img class="errorIcon" src="../../assets/icons/errorIcon.svg"/><span class="tooltip artboards">Upload has failed, try again later or contact H5mag customer support</span>';
+			} else {
+				el.parentElement.innerHTML = '<img class="successIcon" src="../../assets/icons/successIcon.svg"/>';
+			}
+		});
+		let btn = document.getElementById('select-button');
+		btn.classList.remove('inactive');
+		btn.innerText = 'Run again';
+		btn.addEventListener('click', function () {
+			location.reload();
+			window.postMessage('destination-selected', project);
+		})
+	}
+</script>
+</body>
+</html>
